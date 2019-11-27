@@ -1,11 +1,8 @@
-import argparse
+import click
 
-parser = argparse.ArgumentParser()
 
-parser.add_argument('--file_format', type=str, help='File format (csv or json)')
-parser.add_argument('--file_name', type=str, help='File name')
-parser.add_argument('--number_of_winners', type=int, help='Number of winners')
-
-args = parser.parse_args()
-
-print(args)
+@click.option('--file_format', type=str, help='File format (csv or json)', default="json")
+@click.option('--file_name', type=str, help='File name')
+@click.option('--number_of_winners', type=int, help='Number of winners')
+@click.option('--lottery_template', type=str, help='Chose the lottery template')
+@click.option('--output_file', type=str, help='Output file with results')

@@ -1,8 +1,5 @@
-import json
 import csv
-import random
-from configuration import args
-
+import json
 from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent
@@ -10,12 +7,6 @@ TEMPLATES_DIR = BASE_DIR.joinpath('data')
 
 
 class DataReader:
-
-    def print_all_winners(self, file_format, file_name, number_of_winners):
-        data = self.read_data_from_file(file_format, file_name)
-        winners = random.sample(data, number_of_winners)
-        for winner in winners:
-            print("The winner is %s %s" % (winner["first_name"], winner["last_name"]))
 
     def read_data_from_file(self, file_format, file_name):
         if file_format == "csv":
@@ -34,10 +25,13 @@ class DataReader:
         with open(file_name) as f:
             return json.loads(f.read())
 
+    @staticmethod
+    def save_data_to_json_file(data, file_name):
+        with open(file_name, 'w') as f:
+            f.write(json.dumps(data))
+
 
 if __name__ == '__main__':
     data_reader = DataReader()
-    data_reader.print_all_winners(file_format=args.file_format, file_name=f'{TEMPLATES_DIR}/{args.file_name}',
-                                  number_of_winners=args.number_of_winners)
 
 # data_reader.py --file_format=csv --file_name=participants1.csv --number_of_winners=2
