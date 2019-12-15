@@ -1,45 +1,46 @@
 import random
-import click
 from pathlib import Path
 
 from data_reader import DataReader
+from participant import Participant
+from prize import Prize
 
 BASE_DIR = Path(__file__).resolve().parent
-TEMPLATES_DIR = BASE_DIR.joinpath('data/lottery_templates')
 RESULTS_DIR = BASE_DIR.joinpath('data/results')
 
 
-# @click.option('--file_format', type=str, help='File format (csv or json)', default="json")
-# @click.option('--file_name', type=str, help='File name')
-# @click.option('--number_of_winners', type=int, help='Number of winners')
-# @click.option('--lottery_template', type=str, help='Chose the lottery template')
-# @click.option('--output_file', type=str, help='Output file with results')
-class Lottery(DataReader):
-    def __init__(self):
-        DataReader.__init__(self)
+class Lottery(Participant, Prize):
+    """Object of lottery class should contains number of participants,
+     list of prizes and is able to do a lottery and produce results"""
 
-    def select_winners(self, file_format, file_name, number_of_winners):
-        data = self.read_data_from_file(file_format, file_name)
-        winners = random.sample(data, number_of_winners)
+    def __init__(self, file_name, lottery_template, output_file="result.json"):
+        Participant.__init__(self, file_name, file_format=file_name.split(".")[-1])
+        Prize.__init__(self, lottery_template)
+        self.lottery_template = lottery_template
+        self.output_file = output_file
+        self.participants = Participant.read_data_from_file(self)
+        self.prizes = Prize.load_prize_data(self)
+
+    def select_winners(self, number_of_winners):
+        winners = random.sample(self.participants, number_of_winners)
         return winners
 
-    def select_lottery_template(self, lottery_template_name):
-        return self.read_json_file(file_name=f'{TEMPLATES_DIR}/{lottery_template_name}.json')
+    def save_winners_data_to_json_file(self, data):
+        DataReader.save_data_to_json_file(data, file_name=f'{RESULTS_DIR}/{self.output_file}')
 
-    def award_prizes(self, file_format, file_name, lottery_template_name):
-        lottery_template = self.select_lottery_template(lottery_template_name)
-        for prize in lottery_template['prizes']:
-            prize['winners'] = self.select_winners(file_format=file_format,
-                                                   file_name=f'{BASE_DIR}/data/{file_name}.{file_format}',
-                                                   number_of_winners=prize['amount'])
-            print(f"{prize['name']} receives {prize['winners'][0]['first_name']} {prize['winners'][0]['last_name']}")
-        self.save_data_to_json_file(lottery_template, file_name=f'{RESULTS_DIR}/result.json')
+    def award_prizes(self):
+        for prize in self.prizes:
+            prize['winners'] = self.select_winners(number_of_winners=prize['amount'])
+            self.save_winners_data_to_json_file(self.prizes)
 
 
 if __name__ == '__main__':
-    lottery = Lottery()
+    lottery_template_1 = Lottery(file_name="participants1.csv", lottery_template="item_giveaway")
+    lottery_template_1.award_prizes()
+    lottery_template_2 = Lottery(file_name="participants1.json", lottery_template="separate_prizes",
+                                 output_file="result_json.json")
+    lottery_template_2.award_prizes()
     # lottery.award_prizes(file_format="json", file_name="participants1", lottery_template_name="item_giveaway")
-    lottery.award_prizes(file_format="json", file_name="participants1", lottery_template_name="separate_prizes")
     # lottery.award_prizes(file_format="json", file_name="participants2", lottery_template_name="item_giveaway")
     # lottery.award_prizes(file_format="json", file_name="participants2", lottery_template_name="separate_prizes")
     # lottery.award_prizes(file_format="csv", file_name="participants1", lottery_template_name="item_giveaway")
