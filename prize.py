@@ -16,11 +16,3 @@ class Prize:
     def load_prize_data(self):
         lottery_template = DataReader.read_json_file(file_name=f'{TEMPLATES_DIR}/{self.lottery_template}.json')
         return lottery_template['prizes']
-
-
-if __name__ == '__main__':
-    temp_1 = Prize("item_giveaway")
-    print(temp_1.load_prize_data())
-    temp_2 = Prize("separate_prizes")
-    print(temp_2.load_prize_data())
-

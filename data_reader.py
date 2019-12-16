@@ -18,9 +18,3 @@ class DataReader:
     def save_data_to_json_file(data, file_name):
         with open(file_name, 'w') as f:
             f.write(json.dumps(data))
-
-
-if __name__ == '__main__':
-    data_reader = DataReader()
-
-# data_reader.py --file_format=csv --file_name=participants1.csv --number_of_winners=2
