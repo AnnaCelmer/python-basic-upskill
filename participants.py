@@ -6,7 +6,7 @@ BASE_DIR = Path(__file__).resolve().parent
 PARTICIPANTS_DIR = BASE_DIR.joinpath('data')
 
 
-class Participant:
+class Participants:
     """Object of Participant method should contains loaded from file data about the participants"""
 
     def __init__(self, file_name):

@@ -4,25 +4,23 @@ from pathlib import Path
 import numpy as np
 
 from data_reader import DataReader
-from participant import Participant
+from participants import Participants
 from prize import Prize
 
 BASE_DIR = Path(__file__).resolve().parent
-RESULTS_DIR = BASE_DIR.joinpath('data/results')
+RESULTS_DIR = BASE_DIR / 'data' / 'results'
 TEMPLATES_DIR = BASE_DIR.joinpath('data/lottery_templates')
 
 
-class Lottery(Participant, Prize):
+class Lottery:
     """Object of lottery class should contains number of participants,
      list of prizes and is able to do a lottery and produce results"""
 
     def __init__(self, file_name, lottery_template=None, output_file="result.json"):
-        Participant.__init__(self, file_name)
-        Prize.__init__(self, lottery_template)
         self.lottery_template = lottery_template
         self.output_file = output_file
-        self.participants = Participant.read_data_from_file(self)
-        self.prizes = Prize.load_prize_data(self)
+        self.participants = Participants.read_data_from_file(file_name)
+        self.prizes = Prize.load_prize_data()
         click.echo(f'Lottery template: {self.lottery_template}')
 
     def select_winners(self, number_of_winners):
@@ -50,12 +48,13 @@ class Lottery(Participant, Prize):
 
 
 @click.command()
-@click.option('--file_name', help='File name with formatter included')
+@click.option('--file_name', help='File name with formatter included')  # todo: dodac param required
 @click.option('--lottery_template', help='Lottery template name')
 @click.option('--output_file', default='result.json', help='Output file name (only json format is supported)')
 def main(file_name, lottery_template, output_file):
     lottery_template_1 = Lottery(file_name, lottery_template, output_file)
     lottery_template_1.award_prizes()
+    # todo: dodac formatter - default json
 
 
 if __name__ == '__main__':
