@@ -1,22 +1,19 @@
 from pathlib import Path
 
-from data_reader import DataReader
+from data_reader import read_csv_file, read_json_file
 
 BASE_DIR = Path(__file__).resolve().parent
-PARTICIPANTS_DIR = BASE_DIR.joinpath('data')
+PARTICIPANTS_DIR = BASE_DIR / 'data'
 
 
 class Participants:
     """Object of Participant method should contains loaded from file data about the participants"""
 
-    def __init__(self, file_name):
-        self.file_name = file_name if "." in file_name else f"{file_name}.json"
-
-    def read_data_from_file(self):
-        if "csv" in self.file_name:
-            return DataReader.read_csv_file(f"{PARTICIPANTS_DIR}/{self.file_name}")
-        elif "json" in self.file_name:
-            return DataReader.read_json_file(f"{PARTICIPANTS_DIR}/{self.file_name}")
+    @staticmethod
+    def read_data_from_file(file_name, file_format="json"):
+        if file_format == "csv":
+            return read_csv_file(f"{PARTICIPANTS_DIR}/{file_name}")
+        elif file_format == "json":
+            return read_json_file(f"{PARTICIPANTS_DIR}/{file_name}")
         else:
-            raise Exception(f"File format {self.file_name} is unknown")
-
+            raise Exception(f"File format {file_name} is unknown")
