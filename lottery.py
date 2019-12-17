@@ -1,6 +1,7 @@
-import random
 import click
 from pathlib import Path
+
+import numpy as np
 
 from data_reader import DataReader
 from participant import Participant
@@ -8,13 +9,14 @@ from prize import Prize
 
 BASE_DIR = Path(__file__).resolve().parent
 RESULTS_DIR = BASE_DIR.joinpath('data/results')
+TEMPLATES_DIR = BASE_DIR.joinpath('data/lottery_templates')
 
 
 class Lottery(Participant, Prize):
     """Object of lottery class should contains number of participants,
      list of prizes and is able to do a lottery and produce results"""
 
-    def __init__(self, file_name, lottery_template="item_giveaway", output_file="result.json"):
+    def __init__(self, file_name, lottery_template=None, output_file="result.json"):
         Participant.__init__(self, file_name)
         Prize.__init__(self, lottery_template)
         self.lottery_template = lottery_template
@@ -24,8 +26,15 @@ class Lottery(Participant, Prize):
         click.echo(f'Lottery template: {self.lottery_template}')
 
     def select_winners(self, number_of_winners):
-        winners = random.sample(self.participants, number_of_winners)
-        return winners
+        weights = self.verify_list_of_weights()
+        return list(np.random.choice(self.participants, number_of_winners, replace=False, p=weights))
+
+    def verify_list_of_weights(self):
+        list_of_weights = [float(participant['weight']) if 'weight' in participant else 1.0 for participant in
+                           self.participants]
+        weights = np.array(list_of_weights)
+        weights /= weights.sum()
+        return weights
 
     def save_winners_data_to_json_file(self, data):
         DataReader.save_data_to_json_file(data, file_name=f'{RESULTS_DIR}/{self.output_file}')
@@ -36,13 +45,13 @@ class Lottery(Participant, Prize):
             self.save_winners_data_to_json_file(self.prizes)
             for winner in prize['winners']:
                 click.echo(click.style(
-                    f"{prize['name']} receives {winner['first_name']} {winner['last_name']}",
+                    f"{winner['first_name']} {winner['last_name']} receives {prize['name']}",
                     fg='blue'))
 
 
 @click.command()
 @click.option('--file_name', help='File name with formatter included')
-@click.option('--lottery_template', default='item_giveaway', help='Lottery template name')
+@click.option('--lottery_template', help='Lottery template name')
 @click.option('--output_file', default='result.json', help='Output file name (only json format is supported)')
 def main(file_name, lottery_template, output_file):
     lottery_template_1 = Lottery(file_name, lottery_template, output_file)
