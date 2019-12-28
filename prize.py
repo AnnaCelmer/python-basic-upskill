@@ -2,8 +2,7 @@ from pathlib import Path
 
 from data_reader import read_json_file
 
-BASE_DIR = Path(__file__).resolve().parent
-TEMPLATES_DIR = BASE_DIR / 'data' / 'lottery_templates'
+TEMPLATES_DIR = Path.cwd() / 'data' / 'lottery_templates'
 
 
 class Prize:

@@ -2,8 +2,7 @@ from pathlib import Path
 
 from data_reader import read_csv_file, read_json_file
 
-BASE_DIR = Path(__file__).resolve().parent
-PARTICIPANTS_DIR = BASE_DIR / 'data'
+PARTICIPANTS_DIR = Path.cwd() / 'data'
 
 
 class Participants:

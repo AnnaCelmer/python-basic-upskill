@@ -5,9 +5,8 @@ import numpy as np
 
 from data_reader import save_data_to_json_file
 
-BASE_DIR = Path(__file__).resolve().parent
-RESULTS_DIR = BASE_DIR / 'data' / 'results'
-TEMPLATES_DIR = BASE_DIR / 'data' / 'lottery_templates'
+RESULTS_DIR = Path.cwd() / 'data' / 'results'
+TEMPLATES_DIR = Path.cwd() / 'data' / 'lottery_templates'
 
 
 class Lottery:
