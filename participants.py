@@ -11,8 +11,8 @@ class Participants:
     @staticmethod
     def read_data_from_file(file_name, file_format="json"):
         if file_format == "csv":
-            return read_csv_file(f"{PARTICIPANTS_DIR}/{file_name}")
+            return read_csv_file(f"{PARTICIPANTS_DIR}/{file_name}.{file_format}")
         elif file_format == "json":
-            return read_json_file(f"{PARTICIPANTS_DIR}/{file_name}")
+            return read_json_file(f"{PARTICIPANTS_DIR}/{file_name}.{file_format}")
         else:
             raise Exception(f"File format {file_name} is unknown")

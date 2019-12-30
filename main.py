@@ -12,7 +12,8 @@ TEMPLATES_DIR = Path.cwd() / 'data' / 'lottery_templates'
 def specify_lottery_template(lottery_template):
     if lottery_template is None:
         lottery_template = next((e for e in TEMPLATES_DIR.iterdir() if e.is_file()), "No file with lottery template")
-    return lottery_template.stem
+        return lottery_template.stem
+    return lottery_template
 
 
 @click.command()
@@ -21,13 +22,12 @@ def specify_lottery_template(lottery_template):
 @click.option('--lottery_template', help='Lottery template name')
 @click.option('--output_file', default='result.json', help='Output file name (only json format is supported)')
 def main(file_name, file_format, lottery_template, output_file):
-    file_name = file_name if "." in file_name else f"{file_name}.{file_format}"
     participants = Participants()
     list_of_participants = participants.read_data_from_file(file_name, file_format)
     prize = Prize()
     list_of_prizes = prize.load_prize_data(specify_lottery_template(lottery_template))
-    lottery = Lottery(list_of_participants, list_of_prizes, lottery_template, output_file)
-    lottery.award_prizes()
+    lottery = Lottery()
+    lottery.award_prizes(list_of_prizes, list_of_participants, output_file)
 
 
 if __name__ == '__main__':
