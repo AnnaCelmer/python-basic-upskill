@@ -39,3 +39,5 @@ class Lottery:
             for winner in prize['winners']:
                 click.echo(
                     click.style(f"{winner['first_name']} {winner['last_name']} receives {prize['name']}", fg='blue'))
+                participants.remove(winner)
+        return prizes
