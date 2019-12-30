@@ -6,13 +6,14 @@ PARTICIPANTS_DIR = Path.cwd() / 'data'
 
 
 class Participants:
-    """Object of Participant method should contains loaded from file data about the participants"""
+    def __init__(self):
+        self.list_of_participants = []
 
-    @staticmethod
-    def read_data_from_file(file_name, file_format="json"):
+    def read_data_from_file(self, file_name, file_format="json"):
         if file_format == "csv":
-            return read_csv_file(f"{PARTICIPANTS_DIR}/{file_name}.{file_format}")
+            self.list_of_participants = read_csv_file(f"{PARTICIPANTS_DIR}/{file_name}.{file_format}")
         elif file_format == "json":
-            return read_json_file(f"{PARTICIPANTS_DIR}/{file_name}.{file_format}")
+            self.list_of_participants = read_json_file(f"{PARTICIPANTS_DIR}/{file_name}.{file_format}")
         else:
             raise Exception(f"File format {file_name} is unknown")
+        return self.list_of_participants
