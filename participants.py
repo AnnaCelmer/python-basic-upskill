@@ -16,4 +16,3 @@ class Participants:
             self.list_of_participants = read_json_file(f"{PARTICIPANTS_DIR}/{file_name}.{file_format}")
         else:
             raise Exception(f"File format {file_name} is unknown")
-        return self.list_of_participants

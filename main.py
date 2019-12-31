@@ -23,10 +23,10 @@ def specify_lottery_template(lottery_template):
 @click.option('--output_file', default='result.json', help='Output file name (only json format is supported)')
 def main(file_name, file_format, lottery_template, output_file):
     participants = Participants()
-    list_of_participants = participants.read_data_from_file(file_name, file_format)
-    prizes = Prizes()
-    list_of_prizes = prizes.load_prize_data(specify_lottery_template(lottery_template))
-    lottery = Lottery(list_of_prizes, list_of_participants)
+    participants.read_data_from_file(file_name, file_format)
+    prizes = Prizes(specify_lottery_template(lottery_template))
+    prizes.load_prize_data()
+    lottery = Lottery(prizes, participants)
     lottery.award_prizes()
     lottery.save_awarded_prizes_data_to_json_file(output_file)
 

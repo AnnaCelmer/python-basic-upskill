@@ -11,12 +11,12 @@ TEMPLATES_DIR = Path.cwd() / 'data' / 'lottery_templates'
 
 class Lottery:
 
-    def __init__(self, list_of_prizes, list_of_participants):
+    def __init__(self, prizes, participants):
         self.winners = []
         self.awarded_prizes = []
-        self.list_of_prizes = list_of_prizes
-        self.base_list_of_participants = list_of_participants
-        self.updated_list_of_participants = list_of_participants
+        self.list_of_prizes = prizes.list_of_prizes
+        self.base_list_of_participants = participants.list_of_participants
+        self.updated_list_of_participants = participants.list_of_participants
 
     def select_winners(self, number_of_winners):
         self.updated_list_of_participants = [participant for participant in self.base_list_of_participants if
